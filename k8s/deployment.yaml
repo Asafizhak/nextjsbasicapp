@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextjsbasicapp
+  labels:
+    app: nextjsbasicapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nextjsbasicapp
+  template:
+    metadata:
+      labels:
+        app: nextjsbasicapp
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+      containers:
+      - name: nextjsbasicapp
+        image: acrmsassignmentdev2025.azurecr.io/nextjsbasicapp:IMAGE_TAG
+        ports:
+        - containerPort: 3000  # ← Next.js default port
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false  # ← Next.js needs write access
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            memory: "128Mi"  # ← Next.js needs more memory
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10

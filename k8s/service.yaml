@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextjsbasicapp
+  labels:
+    app: nextjsbasicapp  # ← Fixed to match
+spec:
+  selector:
+    app: nextjsbasicapp
+  ports:
+  - port: 80
+    targetPort: 3000     # ← Next.js typically runs on port 3000
+    protocol: TCP
+  type: ClusterIP
