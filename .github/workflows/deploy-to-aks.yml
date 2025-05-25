@@ -1,0 +1,66 @@
+name: Deploy Next.js App to AKS
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  ACR_NAME: acrmsassignmentdev2025
+  ACR_LOGIN_SERVER: acrmsassignmentdev2025.azurecr.io
+  AKS_CLUSTER_NAME: aks-demo-dev
+  AKS_RESOURCE_GROUP: rg-acr-aks-demo-dev
+  APP_NAME: nextjsbasicapp  # ← Updated app name
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🔍 Scan for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+
+      - name: 🐳 Build Docker image
+        run: docker build -t ${{ env.APP_NAME }}:latest .
+
+      - name: 🛡️ Scan container vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.APP_NAME }}:latest'
+          format: 'table'
+
+  deploy:
+    needs: security-scan
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🔐 Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 🐳 Build and push to ACR
+        run: |
+          az acr login --name ${{ env.ACR_NAME }}
+          docker build -t ${{ env.ACR_LOGIN_SERVER }}/${{ env.APP_NAME }}:${{ github.sha }} .
+          docker push ${{ env.ACR_LOGIN_SERVER }}/${{ env.APP_NAME }}:${{ github.sha }}
+
+      - name: 🎯 Get AKS credentials
+        run: |
+          az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }}
+
+      - name: 🚀 Deploy to AKS
+        run: |
+          sed -i "s|IMAGE_TAG|${{ github.sha }}|g" k8s/deployment.yaml
+          kubectl apply -f k8s/
+          kubectl rollout status deployment/${{ env.APP_NAME }}
