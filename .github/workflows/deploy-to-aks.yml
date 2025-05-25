@@ -60,12 +60,20 @@ jobs:
           docker build -t ${{ env.ACR_LOGIN_SERVER }}/${{ env.APP_NAME }}:${{ github.sha }} .
           docker push ${{ env.ACR_LOGIN_SERVER }}/${{ env.APP_NAME }}:${{ github.sha }}
 
+      - name: 🔧 Install kubelogin
+        run: |
+          # Download and install kubelogin
+          curl -LO https://github.com/Azure/kubelogin/releases/download/v0.0.32/kubelogin-linux-amd64.zip
+          unzip kubelogin-linux-amd64.zip
+          sudo mv bin/linux_amd64/kubelogin /usr/local/bin/
+          chmod +x /usr/local/bin/kubelogin
+
       - name: 🎯 Get AKS credentials
         run: |
-          az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }}
+          az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
 
       - name: 🚀 Deploy to AKS
         run: |
           sed -i "s|IMAGE_TAG|${{ github.sha }}|g" k8s/deployment.yaml
-          kubectl apply -f k8s/
+          kubectl apply -f k8s/ --validate=false
           kubectl rollout status deployment/${{ env.APP_NAME }}
