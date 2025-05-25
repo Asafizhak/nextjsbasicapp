@@ -20,7 +20,7 @@ spec:
         fsGroup: 2000
       containers:
       - name: nextjsbasicapp
-        image: acrmsassignmentdev2025.azurecr.io/nextjsbasicapp:IMAGE_TAG
+        image: acrmsassignment2025.azurecr.io/nextjsbasicapp:IMAGE_TAG
         ports:
         - containerPort: 3000  # ← Next.js default port
         securityContext:

@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 env:
-  ACR_NAME: acrmsassignmentdev2025
-  ACR_LOGIN_SERVER: acrmsassignmentdev2025.azurecr.io
+  ACR_NAME: acrmsassignment2025
+  ACR_LOGIN_SERVER: acrmsassignment2025.azurecr.io
   AKS_CLUSTER_NAME: aks-demo-dev
   AKS_RESOURCE_GROUP: rg-acr-aks-demo-dev
   APP_NAME: nextjsbasicapp  # ← Updated app name
