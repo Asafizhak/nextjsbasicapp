@@ -38,14 +38,21 @@ jobs:
     needs: security-scan
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    environment: nextjsbasicapp
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: 🔐 Login to Azure
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: |
+            {
+              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
+              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
+            }
 
       - name: 🐳 Build and push to ACR
         run: |
