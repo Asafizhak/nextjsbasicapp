@@ -24,8 +24,6 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: main
-          head: HEAD
 
       - name: 🐳 Build Docker image
         run: docker build -t ${{ env.APP_NAME }}:latest .
