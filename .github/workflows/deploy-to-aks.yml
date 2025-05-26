@@ -11,7 +11,7 @@ env:
   ACR_LOGIN_SERVER: acrmsassignment2025.azurecr.io
   AKS_CLUSTER_NAME: aks-demo-cluster
   AKS_RESOURCE_GROUP: rg-acr-demo
-  APP_NAME: nextjsbasicapp  # ← Updated app name !
+  APP_NAME: nextjsbasicapp  # ← Updated app name ! !
 
 jobs:
   security-scan:
