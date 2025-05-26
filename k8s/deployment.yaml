@@ -32,7 +32,7 @@ spec:
             - ALL
         resources:
           requests:
-            memory: "128Mi"  # ← Next.js needs more memory.
+            memory: "128Mi"  # ← Next.js needs more memory
             cpu: "100m"
           limits:
             memory: "256Mi"
