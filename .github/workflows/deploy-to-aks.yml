@@ -71,7 +71,7 @@ jobs:
 
       - name: 🎯 Get AKS credentials
         run: |
-          az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
+          az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --admin --overwrite-existing
 
       - name: 🚀 Deploy to AKS
         run: |
