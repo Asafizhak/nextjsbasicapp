@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nextjsbasicapp
+  namespace: nextjsbasicapp
   labels:
     app: nextjsbasicapp  # ← Fixed to match
 spec:
