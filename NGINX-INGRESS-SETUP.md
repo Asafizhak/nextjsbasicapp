@@ -12,32 +12,40 @@
 - **Host**: `nextjsbasicapp.local` (temporary for testing)
 - **Path**: `/` (root path)
 
-### 3. Workflow Updated
-- **Added**: Ingress verification step
+### 3. LoadBalancer for NGINX Ingress Created
+- **File**: `k8s/nginx-loadbalancer.yaml`
+- **Purpose**: Creates external LoadBalancer that points to NGINX Ingress Controller
+- **Namespace**: `nginx-ingress`
+
+### 4. Workflow Updated
+- **Added**: Ingress verification step and LoadBalancer deployment
 - **File**: `.github/workflows/deploy-to-aks.yml`
 
 ## How to Access Your Application
 
-### Option 1: Local Testing with /etc/hosts
-1. Get NGINX Ingress Controller external IP:
+### Get the LoadBalancer External IP
+1. Get the LoadBalancer external IP (this is the correct IP to use):
    ```bash
-   kubectl get svc -n ingress-nginx
+   kubectl get svc nginx-ingress-loadbalancer -n nginx-ingress
    ```
 
-2. Add to your local `/etc/hosts` file (Linux/Mac) or `C:\Windows\System32\drivers\etc\hosts` (Windows):
+2. Wait for `EXTERNAL-IP` to show an actual IP (not `<pending>`)
+
+### Option 1: Local Testing with /etc/hosts
+1. Add to your local `/etc/hosts` file (Linux/Mac) or `C:\Windows\System32\drivers\etc\hosts` (Windows):
    ```
-   <EXTERNAL-IP> nextjsbasicapp.local
+   <LOADBALANCER-EXTERNAL-IP> nextjsbasicapp.local
    ```
 
-3. Access: `http://nextjsbasicapp.local`
+2. Access: `http://nextjsbasicapp.local`
 
 ### Option 2: Direct IP Access (for testing)
-1. Get the external IP:
-   ```bash
-   kubectl get svc -n ingress-nginx
-   ```
+1. Access directly: `http://<LOADBALANCER-EXTERNAL-IP>`
 
-2. Access directly: `http://<EXTERNAL-IP>`
+## Architecture Flow
+```
+Internet → LoadBalancer (External IP) → NGINX Ingress Controller → Your App Service (ClusterIP) → Pods
+```
 
 ## DNS Setup for Production
 
