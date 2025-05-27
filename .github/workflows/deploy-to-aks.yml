@@ -78,8 +78,8 @@ jobs:
           # Create namespace if it doesn't exist
           kubectl create namespace nextjsbasicapp --dry-run=client -o yaml | kubectl apply -f -
           
-          # Create nginx-ingress namespace if it doesn't exist
-          kubectl create namespace nginx-ingress --dry-run=client -o yaml | kubectl apply -f -
+          # Create ingress-nginx namespace if it doesn't exist
+          kubectl create namespace ingress-nginx --dry-run=client -o yaml | kubectl apply -f -
           
           # Update deployment with image tag
           sed -i "s|IMAGE_TAG|${{ github.sha }}|g" k8s/deployment.yaml
@@ -89,10 +89,10 @@ jobs:
           
           # Check NGINX Ingress Controller namespace and labels
           echo "🔍 Checking NGINX Ingress Controller..."
-          kubectl get pods --all-namespaces -l app.kubernetes.io/name=ingress-nginx
-          kubectl get svc --all-namespaces -l app.kubernetes.io/name=ingress-nginx
+          kubectl get pods -n ingress-nginx
+          kubectl get svc -n ingress-nginx
           
-          # Apply NGINX LoadBalancer (in nginx-ingress namespace)
+          # Apply NGINX LoadBalancer (in ingress-nginx namespace)
           kubectl apply -f k8s/nginx-loadbalancer.yaml
           
           # Check rollout status in the specific namespace
@@ -100,4 +100,9 @@ jobs:
           
           # Verify ingress deployment
           kubectl get ingress -n nextjsbasicapp
+          
+          # Verify LoadBalancer has endpoints
+          echo "🔍 Checking LoadBalancer endpoints..."
+          kubectl get endpoints nginx-ingress-loadbalancer -n ingress-nginx
+          kubectl get svc nginx-ingress-loadbalancer -n ingress-nginx
           echo "🌐 Ingress deployed successfully!"
