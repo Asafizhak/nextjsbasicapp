@@ -5,6 +5,7 @@ metadata:
   namespace: nginx-ingress
   labels:
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/instance: nginx-ingress
     app.kubernetes.io/component: controller
 spec:
   type: LoadBalancer
@@ -19,4 +20,5 @@ spec:
     protocol: TCP
   selector:
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/instance: nginx-ingress
     app.kubernetes.io/component: controller
