@@ -4,12 +4,13 @@ metadata:
   name: nextjsbasicapp
   namespace: nextjsbasicapp
   labels:
-    app: nextjsbasicapp  # ← Fixed to match
+    app: nextjsbasicapp
 spec:
+  type: ClusterIP  # Default type, suitable for use with Ingress
   selector:
     app: nextjsbasicapp
   ports:
-  - port: 80
-    targetPort: 3000     # ← Next.js typically runs on port 3000
-    protocol: TCP
-  type: ClusterIP
+    - name: http
+      protocol: TCP
+      port: 80         # Service port (used by Ingress)
+      targetPort: 3000 # Container port (Next.js app listens here)
