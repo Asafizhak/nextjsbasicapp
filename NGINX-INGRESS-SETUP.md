@@ -83,7 +83,7 @@ Internet → NGINX Ingress Controller → nextjsbasicapp Service (ClusterIP) →
 ## Verification Commands
 
 ```bash
-# Check ingress status
+# Check ingress status.
 kubectl get ingress -n nextjsbasicapp
 
 # Check ingress details
