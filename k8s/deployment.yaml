@@ -23,7 +23,7 @@ spec:
       - name: nextjsbasicapp
         image: acrmsassignment2025.azurecr.io/nextjsbasicapp:IMAGE_TAG
         ports:
-        - containerPort: 3000  # ← Next.js default port
+        - containerPort: 3000  # ← Next.js default port.
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: false  # ← Next.js needs write access
